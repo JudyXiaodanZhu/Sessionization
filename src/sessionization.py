@@ -2,14 +2,25 @@ import csv
 import datetime
 import sys
 
+if len(sys.argv) < 4:
+    print("Please enter 2 input files and 1 output file.")
+    sys.exit(0)
+
 csvFile = sys.argv[1]
 textFile = sys.argv[2]
 outFile = sys.argv[3]
+
 
 map = dict()
 file = open(textFile, "r")
 check_time = int(file.read())
 file.close()
+
+
+try:
+    outfile = open(outFile, "a")
+except IOError:
+    print("Unable to open "+outFile+".")
 
 
 def process_data():
@@ -51,12 +62,10 @@ def write_to_file(id, line):
     first = line['first_time'].strftime("%Y-%m-%d %H:%M:%S")
     last = line['last_time'].strftime("%Y-%m-%d %H:%M:%S")
     string = id + ','+first+','+last+','+str(session)+','+str(line['web_count'])
-
-    file = open(outFile, "a")
-    file.write(string+'\n')
-    file.close()
+    outfile.write(string+'\n')
     return
 
 
 process_data()
-
+csvFile.close()
+outfile.close()
