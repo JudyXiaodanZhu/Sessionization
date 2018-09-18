@@ -1,6 +1,7 @@
 import csv
 import datetime
 import sys
+import heapq
 
 if len(sys.argv) < 4:
     print("Please enter 2 input files and 1 output file.")
@@ -12,6 +13,7 @@ outFile = sys.argv[3]
 
 
 map = dict()
+heap = []
 file = open(textFile, "r")
 check_time = int(file.read())
 file.close()
@@ -50,10 +52,12 @@ def process_data():
                 map[user]['web_count'] += 1
                 map[user]['time_count'] = datetime.timedelta(seconds=check_time) + dt_obj
 
-    while map:
-        user = min(map.keys(), key=lambda x: map[x]['count'])
+    for user in map:
+        heapq.heappush(heap, [map[user]['count'], user])
+
+    while heap:
+        key, user = heapq.heappop(heap)
         write_to_file(user, map[user])
-        map.pop(user)
 
 
 def write_to_file(id, line):
